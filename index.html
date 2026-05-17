@@ -523,12 +523,6 @@ section{
 
 .brindis-button:active{transform:translateY(0);}
 
-.brindis-button.done{
-  background:linear-gradient(135deg, #047857 0%, #10b981 100%);
-  color:var(--cream);
-  cursor:default;
-}
-
 .brindis-counter{
   margin-top:32px;
   font-family:'Cormorant Garamond',serif;
@@ -722,8 +716,6 @@ section{
 <button class="audio-toggle" id="audioToggle" aria-label="Música">🎵</button>
 
 <section class="hero">
-  <div class="hero-eyebrow">Bosque <span>·</span> Encantado <span>·</span> VIP</div>
-
   <h1 class="hero-name">Erika</h1>
 
   <div class="hero-divider">
@@ -789,7 +781,7 @@ section{
     <h2 class="section-title">Levantemos <em>las copas</em></h2>
     <p class="hero-tagline" style="margin:0 auto;">Toca el botón para destapar la celebración.</p>
 
-    <button class="brindis-button" id="brindisBtn">🍸 Iniciar el brindis</button>
+    <button class="brindis-button" id="brindisBtn">🥂 ¡Brindemos!</button>
 
     <div class="brindis-counter">
       Brindis preparados · <strong id="cocktailCount">0</strong> / 32
@@ -884,36 +876,48 @@ section{
   els.forEach(el=>obs.observe(el));
 })();
 
-/* BRINDIS */
-let brindisStarted = false;
+/* BRINDIS — replayable */
+let brindisInterval = null;
+let overlayTimeout = null;
+
 document.getElementById('brindisBtn').addEventListener('click', ()=>{
-  if(brindisStarted) return;
-  brindisStarted = true;
-
-  const btn = document.getElementById('brindisBtn');
-  btn.textContent = '🥂 ¡Salud!';
-  btn.classList.add('done');
-
   const overlay = document.getElementById('drinkOverlay');
-  overlay.classList.add('show');
-  setTimeout(()=>overlay.classList.remove('show'), 2400);
-
   const counter = document.getElementById('cocktailCount');
+
+  // reset any in-flight animations
+  if(brindisInterval){ clearInterval(brindisInterval); brindisInterval = null; }
+  if(overlayTimeout){ clearTimeout(overlayTimeout); overlayTimeout = null; }
+  overlay.classList.remove('show');
+  void overlay.offsetWidth; // force reflow so the next .show retriggers transition
+
+  // big drink overlay
+  overlay.classList.add('show');
+  overlayTimeout = setTimeout(()=>overlay.classList.remove('show'), 2400);
+
+  // counter animation 0 → 32
   let v = 0;
-  const interval = setInterval(()=>{
+  counter.textContent = v;
+  brindisInterval = setInterval(()=>{
     v++;
     counter.textContent = v;
-    if(v >= 32) clearInterval(interval);
+    if(v >= 32){
+      clearInterval(brindisInterval);
+      brindisInterval = null;
+    }
   }, 70);
 
+  // confetti every click
   createConfetti();
 
+  // audio only starts on first activation (don't restart if already playing)
   const audio = document.getElementById('audio');
-  audio.volume = .25;
-  audio.play().catch(()=>{});
-  const tog = document.getElementById('audioToggle');
-  tog.classList.add('playing');
-  tog.textContent = '🎶';
+  if(audio.paused){
+    audio.volume = .25;
+    audio.play().catch(()=>{});
+    const tog = document.getElementById('audioToggle');
+    tog.classList.add('playing');
+    tog.textContent = '🎶';
+  }
 
   if(navigator.vibrate) navigator.vibrate([120,70,120]);
 });
