@@ -803,6 +803,29 @@ section{
 </audio>
 
 <script>
+/* AUTO-START MUSIC — try autoplay, fall back to first user interaction */
+(function(){
+  const audio = document.getElementById('audio');
+  audio.volume = .25;
+
+  function markPlaying(){
+    const tog = document.getElementById('audioToggle');
+    tog.classList.add('playing');
+    tog.textContent = '🎶';
+  }
+
+  // 1) try immediate autoplay (may be blocked by browser)
+  audio.play().then(markPlaying).catch(()=>{
+    // 2) blocked — start on the very first user interaction of any kind
+    const events = ['click','mousemove','scroll','touchstart','keydown','wheel'];
+    const onFirstInteraction = function(){
+      if(!audio.paused) return;
+      audio.play().then(markPlaying).catch(()=>{});
+    };
+    events.forEach(e => window.addEventListener(e, onFirstInteraction, { once: true, passive: true }));
+  });
+})();
+
 /* FIREFLIES */
 (function(){
   for(let i=0; i<35; i++){
@@ -1003,11 +1026,20 @@ function playHowlSequence(){
     howlTimeouts.push(t);
   });
 
-  // restore main music after the celebration
-  const restoreT = setTimeout(()=>{
-    fadeAudio(mainAudio, 0.25, 900);
-  }, 3800);
-  howlTimeouts.push(restoreT);
+  // Start fading howls out + main music back up at 13.5s
+  const fadeOutT = setTimeout(()=>{
+    howls.forEach(h => fadeAudio(h, 0, 1200));
+    fadeAudio(mainAudio, 0.25, 1200);
+  }, 13500);
+  howlTimeouts.push(fadeOutT);
+
+  // Hard cap at 15s — stop and reset everything
+  const stopT = setTimeout(()=>{
+    howls.forEach(h => {
+      try{ h.pause(); h.currentTime = 0; h.volume = 0.5; }catch(_){}
+    });
+  }, 15000);
+  howlTimeouts.push(stopT);
 }
 
 /* AUDIO TOGGLE */
