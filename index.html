@@ -473,6 +473,17 @@ section{
   letter-spacing:.5px;
 }
 
+.dog-note{
+  font-size:.58rem;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--gold);
+  margin-top:6px;
+  opacity:.75;
+  font-family:'Inter',sans-serif;
+  font-weight:500;
+}
+
 .section-hint{
   text-align:center;
   font-family:'Cormorant Garamond',serif;
@@ -833,22 +844,23 @@ section{
 /* DOGS GRID */
 (function(){
   const dogs = [
-    {name:'Luna',  emoji:'🐶'},
-    {name:'Rocky', emoji:'🐕'},
-    {name:'Bella', emoji:'🐩'},
-    {name:'Max',   emoji:'🐕‍🦺'},
-    {name:'Coco',  emoji:'🐶'},
-    {name:'Toby',  emoji:'🐕'},
-    {name:'Lola',  emoji:'🐩'},
-    {name:'Bruno', emoji:'🐶'},
-    {name:'Nala',  emoji:'🐕'},
-    {name:'Milo',  emoji:'🐕‍🦺'},
+    {name:'Brechis',     emoji:'🐩'},
+    {name:'Pechan',      emoji:'🐶'},
+    {name:'Fifty',       emoji:'🐕'},
+    {name:'Oso',         emoji:'🐕‍🦺'},
+    {name:'Chocolate',   emoji:'🐕'},
+    {name:'Chichiflina', emoji:'🐶'},
+    {name:'Kurro',       emoji:'🐕'},
+    {name:'Gray',        emoji:'🐩'},
+    {name:'Pulguita',    emoji:'🐶'},
+    {name:'El Arrimado', emoji:'🐕‍🦺', note:'✦ Honorario'},
   ];
   const grid = document.getElementById('dogsGrid');
   dogs.forEach((d)=>{
     const card = document.createElement('div');
     card.className = 'dog-card';
-    card.innerHTML = `<span class="dog-emoji">${d.emoji}</span><div class="dog-name">${d.name}</div>`;
+    const noteHtml = d.note ? `<div class="dog-note">${d.note}</div>` : '';
+    card.innerHTML = `<span class="dog-emoji">${d.emoji}</span><div class="dog-name">${d.name}</div>${noteHtml}`;
     card.addEventListener('click', ()=>{
       const e = card.querySelector('.dog-emoji');
       e.style.transform = 'scale(1.5) rotate(360deg)';
