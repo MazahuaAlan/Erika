@@ -906,9 +906,6 @@ document.getElementById('brindisBtn').addEventListener('click', ()=>{
     }
   }, 70);
 
-  // confetti every click
-  createConfetti();
-
   // audio only starts on first activation (don't restart if already playing)
   const audio = document.getElementById('audio');
   if(audio.paused){
@@ -918,6 +915,11 @@ document.getElementById('brindisBtn').addEventListener('click', ()=>{
     tog.classList.add('playing');
     tog.textContent = '🎶';
   }
+
+  // confetti + paw shower + howls (after audio is set, so ducking works)
+  createConfetti();
+  createPawShower();
+  playHowlSequence();
 
   if(navigator.vibrate) navigator.vibrate([120,70,120]);
 });
@@ -934,6 +936,78 @@ function createConfetti(){
     document.body.appendChild(c);
     setTimeout(()=>c.remove(), 7000);
   }
+}
+
+/* PAW SHOWER — heavy 🐾 rain on top of normal confetti */
+function createPawShower(){
+  for(let i=0;i<55;i++){
+    const c = document.createElement('div');
+    c.className = 'confetti-item';
+    c.textContent = '🐾';
+    c.style.left = Math.random()*100 + 'vw';
+    c.style.animationDuration = (3 + Math.random()*3) + 's';
+    c.style.animationDelay = (Math.random()*1.8) + 's';
+    c.style.fontSize = (1 + Math.random()*0.8) + 'rem';
+    c.style.filter = 'drop-shadow(0 0 6px rgba(212,175,55,.75))';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(), 8500);
+  }
+}
+
+/* HOWLS — pack of dogs responding in different tones */
+const HOWL_URLS = [
+  'https://archive.org/download/Red_Library_Animals_Dogs/R01-12-Hound%20Dog%20Baying%20and%20Howling.mp3',
+  'https://archive.org/download/Red_Library_Animals_Dogs/R01-20-Very%20Small%20Dog%20Barking.mp3',
+  'https://archive.org/download/Red_Library_Animals_Dogs/R24-16-Pack%20of%20Dogs%20Barking.mp3',
+  'https://archive.org/download/Red_Library_Animals_Dogs/R01-67-Dog%20Howling%20with%20Harmonica.mp3',
+];
+const HOWL_DELAYS = [0, 400, 900, 1500];
+const howls = HOWL_URLS.map(u => {
+  const a = new Audio(u);
+  a.preload = 'auto';
+  return a;
+});
+let howlTimeouts = [];
+
+function fadeAudio(audio, targetVol, duration){
+  const startVol = audio.volume;
+  if(Math.abs(startVol - targetVol) < .001) return;
+  const steps = 24;
+  const stepTime = duration / steps;
+  const delta = (targetVol - startVol) / steps;
+  let i = 0;
+  const id = setInterval(()=>{
+    i++;
+    audio.volume = Math.max(0, Math.min(1, startVol + delta * i));
+    if(i >= steps) clearInterval(id);
+  }, stepTime);
+}
+
+function playHowlSequence(){
+  // cancel any in-flight howls so re-clicks restart cleanly
+  howlTimeouts.forEach(t => clearTimeout(t));
+  howlTimeouts = [];
+  howls.forEach(h => { try{ h.pause(); h.currentTime = 0; }catch(_){} });
+
+  const mainAudio = document.getElementById('audio');
+  fadeAudio(mainAudio, 0.04, 250);
+
+  howls.forEach((h, i) => {
+    const t = setTimeout(()=>{
+      try{
+        h.currentTime = 0;
+        h.volume = 0.4 + Math.random()*0.25;
+        h.play().catch(()=>{});
+      }catch(_){}
+    }, HOWL_DELAYS[i]);
+    howlTimeouts.push(t);
+  });
+
+  // restore main music after the celebration
+  const restoreT = setTimeout(()=>{
+    fadeAudio(mainAudio, 0.25, 900);
+  }, 3800);
+  howlTimeouts.push(restoreT);
 }
 
 /* AUDIO TOGGLE */
