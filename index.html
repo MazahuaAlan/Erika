@@ -596,6 +596,19 @@ section{
   animation:confettiFall linear forwards;
 }
 
+.paw-rain{
+  position:fixed;
+  z-index:100;
+  pointer-events:none;
+  top:-60px;
+  animation:confettiFall linear forwards;
+  filter:
+    brightness(0)
+    invert(85%) sepia(60%) saturate(900%) hue-rotate(0deg)
+    drop-shadow(0 0 8px rgba(244,228,188,1))
+    drop-shadow(0 0 18px rgba(212,175,55,.6));
+}
+
 @keyframes confettiFall{
   0%{transform:translateY(-50px) rotate(0deg);opacity:1;}
   100%{transform:translateY(110vh) rotate(720deg);opacity:0;}
@@ -798,12 +811,12 @@ section{
 
 <div class="drink-overlay" id="drinkOverlay">🥂</div>
 
-<audio id="audio" loop>
-  <source src="https://archive.org/download/happy-birthday-to-you-instrumental/Happy%20Birthday%20to%20You%20Jazz.mp3" type="audio/mpeg">
+<audio id="audio" loop preload="auto">
+  <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8e0a5bd.mp3?filename=lounge-110857.mp3" type="audio/mpeg">
 </audio>
 
 <script>
-/* AUTO-START MUSIC — try autoplay, fall back to first user interaction */
+/* AUTO-START MUSIC — try autoplay, then retry on every interaction until it works */
 (function(){
   const audio = document.getElementById('audio');
   audio.volume = .25;
@@ -814,16 +827,28 @@ section{
     tog.textContent = '🎶';
   }
 
-  // 1) try immediate autoplay (may be blocked by browser)
-  audio.play().then(markPlaying).catch(()=>{
-    // 2) blocked — start on the very first user interaction of any kind
-    const events = ['click','mousemove','scroll','touchstart','keydown','wheel'];
-    const onFirstInteraction = function(){
-      if(!audio.paused) return;
-      audio.play().then(markPlaying).catch(()=>{});
-    };
-    events.forEach(e => window.addEventListener(e, onFirstInteraction, { once: true, passive: true }));
-  });
+  const events = ['click','mousemove','scroll','touchstart','keydown','wheel','pointerdown'];
+
+  function cleanup(){
+    events.forEach(e => document.removeEventListener(e, tryStart, true));
+  }
+
+  function tryStart(){
+    if(!audio.paused){ cleanup(); return; }
+    const p = audio.play();
+    if(p && p.then){
+      p.then(()=>{ markPlaying(); cleanup(); }).catch(()=>{});
+    } else {
+      // older browsers: play() returns undefined
+      if(!audio.paused){ markPlaying(); cleanup(); }
+    }
+  }
+
+  // 1) try immediate autoplay
+  tryStart();
+
+  // 2) and keep trying on any interaction (no `once`, retries until success)
+  events.forEach(e => document.addEventListener(e, tryStart, { capture: true, passive: true }));
 })();
 
 /* FIREFLIES */
@@ -961,19 +986,18 @@ function createConfetti(){
   }
 }
 
-/* PAW SHOWER — heavy 🐾 rain on top of normal confetti */
+/* PAW SHOWER — heavy 🐾 rain in glowing gold on top of normal confetti */
 function createPawShower(){
-  for(let i=0;i<55;i++){
+  for(let i=0;i<90;i++){
     const c = document.createElement('div');
-    c.className = 'confetti-item';
+    c.className = 'paw-rain';
     c.textContent = '🐾';
     c.style.left = Math.random()*100 + 'vw';
-    c.style.animationDuration = (3 + Math.random()*3) + 's';
-    c.style.animationDelay = (Math.random()*1.8) + 's';
-    c.style.fontSize = (1 + Math.random()*0.8) + 'rem';
-    c.style.filter = 'drop-shadow(0 0 6px rgba(212,175,55,.75))';
+    c.style.animationDuration = (2.5 + Math.random()*3.5) + 's';
+    c.style.animationDelay = (Math.random()*2) + 's';
+    c.style.fontSize = (1.4 + Math.random()*1.3) + 'rem';
     document.body.appendChild(c);
-    setTimeout(()=>c.remove(), 8500);
+    setTimeout(()=>c.remove(), 9000);
   }
 }
 
