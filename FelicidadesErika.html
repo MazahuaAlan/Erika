@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>Erika • VIP Lounge 🍸🐶</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    overflow:hidden;
+    height:100vh;
+    font-family:'Poppins',sans-serif;
+    background:
+    radial-gradient(circle at top,#36104f,#09090c 75%);
+    color:white;
+    position:relative;
+}
+
+/* GLOWS */
+
+.glow{
+    position:absolute;
+    border-radius:50%;
+    filter:blur(120px);
+    opacity:.35;
+}
+
+.glow.one{
+    width:500px;
+    height:500px;
+    background:#ff2ea6;
+    top:-150px;
+    left:-120px;
+    animation:moveGlow1 10s infinite alternate;
+}
+
+.glow.two{
+    width:450px;
+    height:450px;
+    background:#ffd000;
+    right:-120px;
+    bottom:-120px;
+    animation:moveGlow2 12s infinite alternate;
+}
+
+@keyframes moveGlow1{
+    from{transform:translate(0,0);}
+    to{transform:translate(80px,40px);}
+}
+
+@keyframes moveGlow2{
+    from{transform:translate(0,0);}
+    to{transform:translate(-60px,-50px);}
+}
+
+/* PARTICLES */
+
+.particle{
+    position:absolute;
+    width:3px;
+    height:3px;
+    background:white;
+    border-radius:50%;
+    opacity:.3;
+    animation:float 10s infinite ease-in-out;
+}
+
+@keyframes float{
+
+    0%{
+        transform:translateY(0px);
+        opacity:.1;
+    }
+
+    50%{
+        transform:translateY(-35px);
+        opacity:1;
+    }
+
+    100%{
+        transform:translateY(0px);
+        opacity:.1;
+    }
+
+}
+
+/* WRAPPER */
+
+.wrapper{
+    width:100%;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+    position:relative;
+    z-index:10;
+}
+
+/* CARD */
+
+.card{
+
+    width:100%;
+    max-width:400px;
+
+    background:
+    rgba(255,255,255,.08);
+
+    border:
+    1px solid rgba(255,255,255,.12);
+
+    backdrop-filter:blur(18px);
+
+    border-radius:30px;
+
+    padding:35px 28px;
+
+    text-align:center;
+
+    box-shadow:
+    0 20px 60px rgba(0,0,0,.45),
+    0 0 40px rgba(255,0,170,.12);
+
+    animation:appear 1.1s ease;
+}
+
+@keyframes appear{
+
+    from{
+        opacity:0;
+        transform:
+        translateY(40px)
+        scale(.95);
+    }
+
+    to{
+        opacity:1;
+        transform:
+        translateY(0px)
+        scale(1);
+    }
+
+}
+
+/* TEXT */
+
+.top{
+    letter-spacing:5px;
+    font-size:.72rem;
+    opacity:.7;
+    margin-bottom:15px;
+}
+
+.name{
+
+    font-size:3.3rem;
+    font-weight:700;
+
+    background:
+    linear-gradient(
+    90deg,
+    #ff6ac1,
+    #ffd700);
+
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+
+}
+
+.subtitle{
+    margin-top:10px;
+    font-size:1rem;
+    opacity:.85;
+    transition:.5s;
+}
+
+.level{
+
+    font-size:5.2rem;
+    font-weight:700;
+    margin-top:10px;
+
+    color:#ffd700;
+
+    text-shadow:
+    0 0 25px rgba(255,215,0,.5);
+
+    animation:pulse 2s infinite;
+}
+
+@keyframes pulse{
+
+    0%,100%{
+        transform:scale(1);
+    }
+
+    50%{
+        transform:scale(1.06);
+    }
+
+}
+
+.message{
+    margin-top:20px;
+    line-height:1.9;
+    font-size:.97rem;
+    opacity:.92;
+}
+
+/* DOGS */
+
+.dogs{
+    margin-top:28px;
+    display:flex;
+    justify-content:center;
+    gap:14px;
+    font-size:2rem;
+}
+
+.dog{
+    animation:bounce 2s infinite;
+}
+
+.dog:nth-child(2){
+    animation-delay:.3s;
+}
+
+.dog:nth-child(3){
+    animation-delay:.6s;
+}
+
+@keyframes bounce{
+
+    0%,100%{
+        transform:translateY(0);
+    }
+
+    50%{
+        transform:translateY(-12px);
+    }
+
+}
+
+/* BUTTON */
+
+.button{
+
+    margin-top:30px;
+
+    border:none;
+    outline:none;
+
+    padding:15px 24px;
+
+    border-radius:18px;
+
+    background:
+    linear-gradient(
+    90deg,
+    #ff4fa3,
+    #ffd700);
+
+    color:#111;
+
+    font-weight:700;
+    font-size:1rem;
+
+    cursor:pointer;
+
+    transition:.25s;
+}
+
+.button:hover{
+    transform:scale(1.05);
+}
+
+.counter{
+    margin-top:22px;
+    opacity:.82;
+    font-size:.92rem;
+}
+
+/* FOOTER */
+
+.footer{
+    margin-top:20px;
+    opacity:.45;
+    font-size:.75rem;
+}
+
+/* CONFETTI */
+
+.confetti{
+    position:absolute;
+    font-size:22px;
+    animation:fall linear forwards;
+}
+
+@keyframes fall{
+
+    0%{
+        transform:
+        translateY(-120px)
+        rotate(0deg);
+
+        opacity:1;
+    }
+
+    100%{
+        transform:
+        translateY(120vh)
+        rotate(720deg);
+
+        opacity:0;
+    }
+
+}
+
+/* BIG DRINK */
+
+.drink{
+
+    position:absolute;
+
+    top:50%;
+    left:50%;
+
+    transform:
+    translate(-50%,-50%)
+    scale(.4);
+
+    font-size:7rem;
+
+    opacity:0;
+
+    z-index:50;
+
+    transition:1s;
+}
+
+.drink.show{
+
+    opacity:1;
+
+    transform:
+    translate(-50%,-50%)
+    scale(1.1);
+
+}
+
+/* WALKING DOGS */
+
+.walker{
+
+    position:absolute;
+
+    bottom:18px;
+
+    font-size:2rem;
+
+    animation:walk linear infinite;
+}
+
+.walker.one{
+    animation-duration:16s;
+}
+
+.walker.two{
+    animation-duration:22s;
+    bottom:60px;
+}
+
+@keyframes walk{
+
+    0%{
+        left:-10%;
+    }
+
+    100%{
+        left:110%;
+    }
+
+}
+
+/* VIP */
+
+.vip{
+
+    position:absolute;
+
+    top:60px;
+
+    width:100%;
+
+    text-align:center;
+
+    letter-spacing:6px;
+
+    font-size:.8rem;
+
+    opacity:0;
+
+    transition:1s;
+
+    z-index:20;
+}
+
+.vip.show{
+    opacity:1;
+}
+
+/* MOBILE */
+
+@media(max-width:480px){
+
+    .name{
+        font-size:2.8rem;
+    }
+
+    .level{
+        font-size:4.5rem;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="glow one"></div>
+<div class="glow two"></div>
+
+<div class="vip" id="vipText">
+    VIP ACCESS GRANTED ✨
+</div>
+
+<div class="drink" id="drink">
+    🍸
+</div>
+
+<div class="walker one">🐶</div>
+<div class="walker two">🐕</div>
+
+<div class="wrapper">
+
+    <div class="card">
+
+        <div class="top">
+            VIP LOUNGE • TONIGHT ONLY
+        </div>
+
+        <div class="name">
+            Erika
+        </div>
+
+        <div class="subtitle" id="subtitle">
+            birthday mode activated 🍸
+        </div>
+
+        <div class="level">
+            32
+        </div>
+
+        <div class="message">
+
+            El lounge oficialmente abrió
+            para celebrar otro nivel desbloqueado ✨
+
+            <br><br>
+
+            Perritos pequeños: presentes 🐶<br>
+            Drinks preparados: confirmados 🍸<br>
+            Buena vibra: obligatoria ✨
+
+        </div>
+
+        <div class="dogs">
+
+            <div class="dog">🐶</div>
+            <div class="dog">🐕</div>
+            <div class="dog">🐩</div>
+
+        </div>
+
+        <button class="button" onclick="startParty()">
+            🍸 iniciar celebración
+        </button>
+
+        <div class="counter">
+            cocktails preparados:
+            <span id="count">0</span>/32
+        </div>
+
+        <div class="footer">
+            feliz cumpleaños ✨
+        </div>
+
+    </div>
+
+</div>
+
+<!-- AUDIO -->
+
+<audio id="audio">
+<source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8e0a5bd.mp3?filename=lounge-110857.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+
+/* PARTICLES */
+
+for(let i=0;i<70;i++){
+
+    const p=document.createElement('div');
+
+    p.classList.add('particle');
+
+    p.style.left=Math.random()*100+'vw';
+    p.style.top=Math.random()*100+'vh';
+
+    p.style.animationDelay=
+    Math.random()*10+'s';
+
+    document.body.appendChild(p);
+}
+
+/* PARTY */
+
+let started=false;
+
+function startParty(){
+
+    if(started) return;
+
+    started=true;
+
+    document
+    .getElementById('subtitle')
+    .innerText=
+    'Erika has entered the lounge ✨';
+
+    document
+    .getElementById('vipText')
+    .classList.add('show');
+
+    const drink=
+    document.getElementById('drink');
+
+    drink.classList.add('show');
+
+    setTimeout(()=>{
+
+        drink.classList.remove('show');
+
+    },2200);
+
+    /* AUDIO */
+
+    const audio=
+    document.getElementById('audio');
+
+    audio.volume=.25;
+
+    audio.play();
+
+    /* COUNTER */
+
+    let value=0;
+
+    const counter=
+    document.getElementById('count');
+
+    const interval=
+    setInterval(()=>{
+
+        value++;
+
+        counter.innerText=value;
+
+        if(value>=32){
+
+            clearInterval(interval);
+
+        }
+
+    },65);
+
+    /* CONFETTI */
+
+    createConfetti();
+
+    /* VIBRATION */
+
+    if(navigator.vibrate){
+
+        navigator.vibrate([
+            120,
+            70,
+            120
+        ]);
+
+    }
+
+}
+
+/* CONFETTI */
+
+function createConfetti(){
+
+    const items=[
+        '✨',
+        '🍸',
+        '🐶',
+        '🎉',
+        '💫'
+    ];
+
+    for(let i=0;i<90;i++){
+
+        const c=
+        document.createElement('div');
+
+        c.classList.add('confetti');
+
+        c.innerHTML=
+        items[
+        Math.floor(
+        Math.random()*items.length)];
+
+        c.style.left=
+        Math.random()*100+'vw';
+
+        c.style.animationDuration=
+        (Math.random()*3+2)+'s';
+
+        document.body.appendChild(c);
+
+        setTimeout(()=>{
+
+            c.remove();
+
+        },5000);
+
+    }
+
+}
+
+</script>
+
+</body>
+</html>
